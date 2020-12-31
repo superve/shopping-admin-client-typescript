@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        // this enables stricter inference for data properties on `this`
+        "strict": true,
+        "jsx": "preserve",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "/@/*": ["src/*"]
+        },
+        "plugins": [
+            // css-module插件
+            { "name": "typescript-plugin-css-modules" }
+        ]
+    },
+    "exclude": ["node_modules", "dist", "**/*.js"]
+}
