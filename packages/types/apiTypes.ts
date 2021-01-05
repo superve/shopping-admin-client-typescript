@@ -5,8 +5,10 @@ export interface ApiRequestConfig<T> extends AxiosRequestConfig {
     params?: T
     token?: boolean
 }
+// export interface ApiRequestConfig extends AxiosRequestConfig {
+//     token?: boolean
+// }
 export type ApiConfig = Record<string, ApiRequestConfig<{}>>;
-
 //export type ApiRequestConfig = AxiosRequestConfig;
 export type ApiResponsePromise = AxiosPromise;
 export type ApiResponseError = AxiosError;

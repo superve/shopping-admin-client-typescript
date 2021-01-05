@@ -20,7 +20,7 @@ function generatorService (config: ApiConfig) {
     const apiResult: ApiResult = {};
     Object.keys(config).forEach((name: string) => {
         // request 代理装饰器
-        apiResult[name] = function (params: Object ): ApiResponsePromise { 
+        apiResult[name] = function (params?: Object ): ApiResponsePromise { 
             if (_.isPlainObject(params) === false) {
                 throw new Error("自定义错误：调用api参数必须是对象");
             }

@@ -105,10 +105,9 @@ export default defineComponent({
                     this.query[item.key] = item.value;
                 }
             })
-
-            if(!_.isEmpty(this.query)) {
+            //if(!_.isEmpty(this.query)) {
                 this.$emit("search", this.query);
-            }
+            //}
         },
         handleCondition() {
             this.formData.push({

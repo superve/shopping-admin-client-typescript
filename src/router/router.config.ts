@@ -61,6 +61,20 @@ export const menusRoutes: RouteRecordRaw[] = [
                         meta: {
                             label: "管理员列表"
                         }
+                    },
+                    {
+                        path: "create",
+                        component: () => import("../views/adminUser/Create.vue"),
+                        meta: {
+                            label: "新增管理员"
+                        }
+                    },
+                    {
+                        path: "update",
+                        component: () => import("../views/adminUser/Update.vue"),
+                        meta: {
+                            label: "编辑管理员"
+                        }
                     }
                 ]
             }
