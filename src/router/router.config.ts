@@ -47,6 +47,39 @@ export const menusRoutes: RouteRecordRaw[] = [
                 ]
             },
             {
+                path: "/goods",
+                redirect: "/goods/center",
+                component: MainLayout,
+                meta: {
+                    label: "商品管理",
+                    policies: ["AUTHOR", "CHARGE"]
+                },
+                children: [
+                    {
+                        path: "center",
+                        component: () => import("../views/goods/Center.vue"),
+                        meta: {
+                            label: "商品列表"
+                        }
+                    },
+                    {
+                        path: "create",
+                        component: () => import("../views/goods/Create.vue"),
+                        meta: {
+                            label: "新增商品"
+                        }
+                    },
+                    {
+                        path: "update/:id",
+                        component: () => import("../views/goods/Update.vue"),
+                        meta: {
+                            label: "编辑商品",
+                            hiddenMenu: true
+                        }
+                    }
+                ]
+            },
+            {
                 path: "/admin-user",
                 redirect: "/admin-user/center",
                 component: MainLayout,
@@ -70,14 +103,15 @@ export const menusRoutes: RouteRecordRaw[] = [
                         }
                     },
                     {
-                        path: "update",
+                        path: "update/:id",
                         component: () => import("../views/adminUser/Update.vue"),
                         meta: {
-                            label: "编辑管理员"
+                            label: "编辑管理员",
+                            hiddenMenu: true
                         }
                     }
                 ]
-            }
+            },
         ]
     }
 ]

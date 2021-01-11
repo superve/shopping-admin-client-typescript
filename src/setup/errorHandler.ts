@@ -1,12 +1,13 @@
-import { ComponentOptions } from "vue";
-import { errorHandler } from "../packages/utils/request";
-import { ApiResponseError } from "../packages/types/apiTypes";
-import router from "./router/index"
+import { errorHandler } from "../../packages/utils/http/request";
+import { ApiResponseError } from "../../packages/utils/http/types";
+import router from "../router/index"
+import { removeStorage } from "../../packages/utils/storage";
+
+// 独立放到hooks里
 import { message } from "ant-design-vue";
-import { removeStorage } from "../packages/utils/storage";
 
 // 错误处理
-function resErrorHandler() {
+export default function resErrorHandler() {
     errorHandler((error: ApiResponseError) => {
         const { response } = error;
         
@@ -21,11 +22,3 @@ function resErrorHandler() {
         }
     })
 }
-
-const setup = {
-    install (app: ComponentOptions) {
-        resErrorHandler();
-    }
-};
-
-export default setup;

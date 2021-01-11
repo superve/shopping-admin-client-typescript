@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import { useStore } from 'vuex'
-import PropertiesFilter from "../../components/filter/PropertiesFilter.vue"
+import PropertiesFilter from "../../components/propertiesFilter/index.vue"
 import { UserParams } from "../../../packages/api/types/userTypes"
 
 export default defineComponent({

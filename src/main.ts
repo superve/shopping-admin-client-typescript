@@ -7,7 +7,7 @@ import './index.less'
 
 import store from "../packages/store"
 import router from "./router/index"
-import setup from "./setup";
+import setup from "./setup/index";
 
 export const app = createApp(App);
 

@@ -15,7 +15,7 @@ const role: Module<{}, any> = {
     actions: {
         getAdminRoles({ commit }) {
             return new Promise((resolve, reject) => {
-                roleApi.getAdminRoles({})
+                roleApi.getAdminRoles()
                     .then(res => {
                         resolve(res.data);
                     })

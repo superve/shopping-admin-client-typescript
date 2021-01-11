@@ -10,7 +10,7 @@
         }">
             <a-table-column key="id" title="Id" data-index="id"/>
             <a-table-column key="email" title="邮箱" data-index="email"/>
-            <a-table-column key="username" title="用户名">
+            <a-table-column key="username" title="姓名">
                 <template #default="{record}">
                     {{record.firstname + record.lastname}}
                 </template>
@@ -27,6 +27,19 @@
                     </div>
                 </template>
             </a-table-column>
+            <a-table-column key="isActive" title="状态">
+                <template #default="{record}">
+                    <a-tag :color="record.isActive ? 'green' : 'orange'">
+                        {{record.isActive ? "启用" : "关闭"}}
+                    </a-tag>
+                </template>
+            </a-table-column>
+            <a-table-column key="actions" title="操作">
+                <template #default="{record}">
+                    <router-link :to="`/admin-user/update/${record.id}`">编辑</router-link>
+                    <a-divider type="vertical" />
+                </template>    
+            </a-table-column>   
         </a-table>
     </div>
 </template>
@@ -34,7 +47,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted} from "vue";
 import { useStore } from 'vuex'
-import PropertiesFilter from "../../components/filter/PropertiesFilter.vue"
+import PropertiesFilter from "../../components/propertiesFilter/index.vue"
 import { UserParams } from "../../../packages/api/types/userTypes"
 
 export default defineComponent({
@@ -46,15 +59,6 @@ export default defineComponent({
             page: 1,
             pageSize: 5
         });
-
-        // const setQueries = function(query?: object){
-        //     queries.value = {
-        //         page: page.value,
-        //         pageSize: pageSize.value,
-        //         ...query
-        //     }
-        // }
-        
         // 获取所有用户
         const fetchAllAdmin = async () => {
             const result = await store.dispatch("user/getAdmin", queries.value);

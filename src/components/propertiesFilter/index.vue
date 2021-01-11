@@ -36,7 +36,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { FilterKey, filterProps, FilterProps } from "./filterTypes";
+import { FilterKey, filterProps, FilterProps } from "./types";
 import * as _ from "lodash";
 import {
   PlusCircleOutlined

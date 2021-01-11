@@ -56,7 +56,7 @@ function createRoutes(router: Router) {
     const newRoutes = generatorRoutes(copyMenusRoutes);
     newRoutes.forEach(route => {
         router.addRoute(route);
-    })
+    });
 }
 
 export default createRoutes;

@@ -35,6 +35,7 @@ import { defineComponent, reactive, ref, unref } from "vue";
 import { useStore } from 'vuex';
 import { message } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
+import { UserParams } from "../../../packages/api/types/userTypes"
 
 export default defineComponent({
     setup() {
@@ -43,7 +44,7 @@ export default defineComponent({
         const router = useRouter();
         
         const formRef = ref<any>(null);
-        const formData = reactive({
+        const formData: UserParams.AdminLogin = reactive({
             email: "",
             password: "",
         });
@@ -62,7 +63,6 @@ export default defineComponent({
         async function handleLogin() {
             const form = unref(formRef);
             if(!form) return;
-
             try {
                 const data = await form.validate();
                 const result = await store.dispatch("user/adminLogin", {

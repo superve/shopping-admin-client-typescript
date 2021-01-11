@@ -1,13 +1,13 @@
-import request from "./request";
+import request from "./http/request";
 import * as _ from "lodash";
 
 import { getToken } from "./storage";
-import { ApiConfig, ApiRequestConfig, ApiResponsePromise  } from "../types/apiTypes";
+import { ApiConfig, ApiRequestConfig, ApiResponsePromise  } from "./http/types";
 
 // 可ctrl+点击AxiosRequestConfig 查看具体属性列表。
 type ApiResult = Record<
     string, 
-    (params: Object) => ApiResponsePromise
+    (params?: Object, newArgs?: object) => ApiResponsePromise
 >;
 
 /**
@@ -20,39 +20,50 @@ function generatorService (config: ApiConfig) {
     const apiResult: ApiResult = {};
     Object.keys(config).forEach((name: string) => {
         // request 代理装饰器
-        apiResult[name] = function (params?: Object ): ApiResponsePromise { 
-            if (_.isPlainObject(params) === false) {
-                throw new Error("自定义错误：调用api参数必须是对象");
-            }
+        // params是请求的参数，可能是get或者post请求
+        // newArgs 是覆盖原配置的对象
+        apiResult[name] = function (params, newArgs ): ApiResponsePromise { 
 
-            const args: ApiRequestConfig<{}> = config[name];
-            // 禁止args.params或args.data出现缓存
-            const saveArgs = {...args};
-
-            if (args.method === "GET") {
-                saveArgs.params = Object.assign(
-                    {},
-                    args.params || {},
-                    params
-                )
-            }else if (args.method === "POST" || args.method === "PUT") {
-                saveArgs.data = Object.assign(
-                    {},
-                    args.data || {},
-                    params
-                )
+            let current: ApiRequestConfig<{}> = config[name];
+            if (_.isPlainObject(newArgs)) {
+                current = Object.assign({}, current, newArgs);
             }
+            // saveCurrent.params或saveCurrent.data出现缓存
+            const saveCurrent = {...current};
+
+            // 上传资源
+            if(params instanceof FormData) {
+                saveCurrent.data = params;
+            } else {
+                if (_.isPlainObject(params) === false) {
+                    params = {};
+                }
+    
+                // 合并参数
+                if (current.method === "GET") {
+                    saveCurrent.params = Object.assign(
+                        {},
+                        current.params || {},
+                        params
+                    )
+                }else if (current.method === "POST" || current.method === "PUT") {
+                    saveCurrent.data = Object.assign(
+                        {},
+                        current.data || {},
+                        params
+                    )
+                }
+            } 
 
             // 是否需要包含token
-            if (saveArgs.token) {
-                delete saveArgs.token;
-                saveArgs.headers = {
-                    ...saveArgs.headers,
+            if (saveCurrent.token) {
+                delete saveCurrent.token;
+                saveCurrent.headers = {
+                    ...saveCurrent.headers,
                     Authorization: getToken()
                 }
             }
-
-            return request(saveArgs);
+            return request(saveCurrent);
         }
     });
     return apiResult;

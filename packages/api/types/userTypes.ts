@@ -11,8 +11,8 @@ export declare namespace UserParams {
     }
 
     interface AdminLogin {
-        username: string
-        verify_code: string
+        email: string
+        password: string
     }
 
     interface GetUsers {
@@ -37,6 +37,18 @@ export declare namespace UserParams {
         lastname: string
         email: string
         roles: Array<number>
+        isActive?: boolean
+        username?: string
+    }
+
+    interface getById {
+        data?: object
+        url?: string
+    }
+
+    interface EditeAdmin {
+        data: CreateAdmin,
+        url: string
     }
 }
 

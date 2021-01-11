@@ -48,7 +48,7 @@ import { message } from "ant-design-vue";
 export default defineComponent({
     setup() {
         const store = useStore();
-        let roleData = ref([]);
+        const roleData = ref([]);
         const formRef = ref<any>(null);
 
         // 获取所有角色

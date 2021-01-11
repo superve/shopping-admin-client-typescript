@@ -16,5 +16,9 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped lang="less">
+.main-container{
+    height: 100%;
+    overflow: auto;
+}
 </style>

@@ -1,7 +1,6 @@
-import { ComponentOptions } from "vue";
 import axios from "axios";
 
-import { ApiRequestConfig, ApiResponseError, ApiResponse } from "../types/apiTypes"
+import { ApiRequestConfig, ApiResponseError, ApiResponse } from "./types"
 
 // 创建axios实例
 const request = axios.create({
@@ -35,13 +34,6 @@ export const errorHandler = (callback?: ErrorHandler) => {
 request.interceptors.response.use((response: ApiResponse) => {
     return response.data;
 }, errorHandler());
-
-// 作为插件暴露
-export const VueAxios = {
-    install (Vue: ComponentOptions) {
-        Vue.prototype.$axios = request;
-    }
-}
 
 // 默认暴露出request
 export default request;

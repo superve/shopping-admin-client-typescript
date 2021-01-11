@@ -12,7 +12,7 @@
                 v-for="(item, index) in menusRoutes[0].children" 
                 :key="index">
                     <template v-if="!item.children">
-                        <a-menu-item :key="`${index}`">
+                        <a-menu-item :key="`${index}`" v-if="!item.meta.hiddenMenu">
                             <router-link :to="item.path">{{item.meta.label}}</router-link>
                         </a-menu-item>
                     </template>
@@ -20,14 +20,14 @@
                         <a-sub-menu 
                             :key="`${index}`"
                             :title="item.meta.label">
-                                <a-menu-item 
-                                v-for="(subItem, subIndex) in item.children" 
-                                :key="`${index}-${subIndex}`">
-                                    <router-link 
-                                    :to="`${item.path}/${subItem.path}`">
-                                        {{subItem.meta.label}}
-                                    </router-link>
-                                </a-menu-item>
+                                <template v-for="(subItem, subIndex) in item.children">
+                                    <a-menu-item :key="`${index}-${subIndex}`" v-if="!subItem.meta.hiddenMenu">
+                                        <router-link 
+                                        :to="`${item.path}/${subItem.path}`">
+                                            {{subItem.meta.hiddenMenu}}{{subItem.meta.label}}
+                                        </router-link>
+                                    </a-menu-item>
+                                </template>
                             </a-sub-menu>
                     </template>    
                 </template>
@@ -59,6 +59,9 @@ export default defineComponent({
     },
     components: {},
     methods: {},
+    mounted() {
+        // console.log(generatorRoutes(menusRoutes));
+    }
 });
 </script>
 

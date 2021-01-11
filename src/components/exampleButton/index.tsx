@@ -1,5 +1,5 @@
 import { defineComponent } from "vue";
-import  styles from "./index.module.less";
+import styles from "./index.module.less";
 // import { Button } from "ant-design-vue";
 
 // import Button2 from "./index.vue";

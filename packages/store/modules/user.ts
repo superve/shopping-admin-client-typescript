@@ -102,6 +102,32 @@ const user: Module<UserState, any> = {
                         reject(err);
                     })
             })
+        },
+
+        // 根据id获取管理员信息
+        getAdminById({}, data: UserParams.getById) {
+            return new Promise((resolve, reject) => {
+                userApi.getAdminById({}, {
+                    url: data.url
+                }).then(res => {
+                    resolve(res);
+                }).catch(err => {
+                    reject(err);
+                })
+            })
+        },
+        
+        // 修改管理员信息
+        editeAdmin({}, data: UserParams.EditeAdmin) {
+            return new Promise((resolve, reject) => {
+                userApi.editeAdmin(data.data, {
+                    url: data.url
+                }).then(res => {
+                    resolve(res);
+                }).catch(err => {
+                    reject(err);
+                })
+            })
         }
     }
 }
