@@ -1,9 +1,11 @@
 import {reactive, ref, toRef, unref, } from "vue";
 import { GoodsTypes } from "../../../../packages/api/types/goodsTypes";
 import goodsApi from "../../../../packages/api/goods";
+import useMessage from "../../../hooks/components/useMessage";
+const { success } = useMessage();
 
 export default function useGoodsCreate() {
-    const formData: GoodsTypes.CreateGoods = reactive({
+    const formData = reactive<GoodsTypes.Goods>({
         goods_name: "",
         purchasing_price: 0,
         sales_price: 0,
@@ -35,7 +37,26 @@ export default function useGoodsCreate() {
             await form.validate();
             const result = await goodsApi.createGoods(queries);
             if(result) {
-                console.log(result)
+                success("操作成功!");
+            }
+        } catch (error) {}
+    }
+
+    async function handleUpdateGoods() {
+        const queries = unref(formData);
+        const form = unref(formRef);
+        // 删除skus, skus独立编辑
+        Reflect.deleteProperty(queries, "skus");
+        
+        console.log(queries)
+
+        try {
+            await form.validate();
+            const result = await goodsApi.updateGoods(queries, {
+                url: "/goods/" + queries.id
+            });
+            if(result) {
+                success("操作成功!");
             }
         } catch (error) {}
     }
@@ -46,6 +67,7 @@ export default function useGoodsCreate() {
         skus,
         rules,
         formRef,
-        handleGoodsCreate
+        handleGoodsCreate,
+        handleUpdateGoods
     }
 }

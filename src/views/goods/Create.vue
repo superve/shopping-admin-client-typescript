@@ -79,7 +79,7 @@
                 <a-button type="primary" @click="handleSubmit">确定</a-button>
             </a-form-item>
         </a-form>
-        <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+        <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancelPreview">
             <img alt="" style="width: 100%" :src="previewImage" />
         </a-modal>
     </div>
@@ -88,8 +88,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import useGoodsCreate from "./composables/useGoodsCreate";
+import usePreview from "./composables/usePreview";
 import useUpload from "./composables/useUpload";
-import getBase64 from "../../../packages/utils/getBase64";
 import request from "../../../packages/utils/http/request";
 import { getToken } from "../../../packages/utils/storage";
 
@@ -118,6 +118,13 @@ export default defineComponent({
             handleGoodsCreate,
             formRef
         } = useGoodsCreate();
+        const {
+            previewVisible, 
+            previewImage, 
+            handlePreview, 
+            handleCancelPreview
+        } =  usePreview();
+
         return {
             formData,
             goods_media,
@@ -126,6 +133,11 @@ export default defineComponent({
             handleGoodsCreate,
             formRef,
             token: getToken(),
+
+            previewVisible, 
+            previewImage, 
+            handlePreview, 
+            handleCancelPreview
         }
     },
     data() {
@@ -134,8 +146,6 @@ export default defineComponent({
             wrapperCol: { span: 10 },
             fileList: [],
             request,
-            previewVisible: false,
-            previewImage: '',
             skuName: [
                 { value: "", placeholder: "类型一(颜色)" },
                 { value: "", placeholder: "类型二(尺寸)" },
@@ -150,8 +160,7 @@ export default defineComponent({
                 price: "单价",
                 inventory: "库存",
                 sales_volume: "销量"
-            },
-            description: "什么东西，不能编辑都有"
+            }
         }
     },
     components: {
@@ -160,16 +169,6 @@ export default defineComponent({
     methods: {
         onIsSale(value: boolean) {
             this.formData.is_sale = value;
-        },
-        handleCancel() {
-            this.previewVisible = false;
-        },
-        async handlePreview(file: any) {
-            if (!file.url && !file.preview) {
-                file.preview = await getBase64(file.originFileObj);
-            }
-            this.previewImage = file.url || file.preview;
-            this.previewVisible = true;
         },
         handleChange({file, fileList }: any) {
             this.fileList = fileList;

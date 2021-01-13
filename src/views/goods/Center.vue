@@ -40,12 +40,17 @@ import PropertiesFilter from "../../components/propertiesFilter/index.vue"
 
 export default defineComponent({
     setup() {
-        const {queries, goodsData, fetchGoods, total} = useGoods();
+        const {queries, goodsData, total, fetchGoods, fetchGoodsCount} = useGoods();
         const {filterKeys, handleGoodsFilter} = useGoodsFilter(queries);
+
+        onMounted(() => {
+            fetchGoods();
+            fetchGoodsCount();
+        });
+        
         return {
             queries,
             goodsData,
-            fetchGoods,
             total,
             filterKeys,
             handleGoodsFilter

@@ -14,8 +14,36 @@ const getGoodsCount: Api<GoodsTypes.GetGoods> = {
     token: true
 }
 
-const createGoods: Api<GoodsTypes.CreateGoods> = {
+const createGoods: Api<GoodsTypes.Goods> = {
     url: "/admin/goods",
+    method: "POST",
+    token: true
+}
+
+const updateGoods: Api<GoodsTypes.Goods> = {
+    url: "/goods/:id",
+    method: "PUT",
+    token: true
+}
+
+const getGoodsById: Api<object> = {
+    url: "/goods/:id",
+    method: "GET"
+}
+
+const delGoodsSku: Api<object> = {
+    url: "/skus/:id",
+    method: "DELETE"
+}
+
+const updateGoodsSku: Api<GoodsTypes.GoodsSku> = {
+    url: "/skus/:id",
+    method: "PUT",
+    token: true
+}
+
+const createGoodsSku: Api<GoodsTypes.GoodsSku> = {
+    url: "/skus",
     method: "POST",
     token: true
 }
@@ -23,5 +51,10 @@ const createGoods: Api<GoodsTypes.CreateGoods> = {
 export default generatorService({
     getGoods,
     getGoodsCount,
-    createGoods
+    createGoods,
+    getGoodsById,
+    delGoodsSku,
+    updateGoodsSku,
+    createGoodsSku,
+    updateGoods
 });

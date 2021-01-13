@@ -1,4 +1,4 @@
-import { ref, unref, onMounted, watch } from "vue";
+import { reactive, ref, unref, watch } from "vue";
 import { GoodsTypes } from "../../../../packages/api/types/goodsTypes";
 import goodsApi from "../../../../packages/api/goods";
 
@@ -9,6 +9,7 @@ export default function useGoods(){
         _start: 0,
         _limit: 5
     });
+    const goodsItem = ref<any>({})
 
     async function fetchGoods() {
         const _queries = unref(queries);
@@ -29,10 +30,12 @@ export default function useGoods(){
         }
     }
 
-    onMounted(() => {
-        fetchGoods();
-        fetchGoodsCount();
-    });
+    async function fetchGoodsById(id: string | string[]) {
+        const result = await goodsApi.getGoodsById({}, {
+            url: "/goods/" + id
+        })
+        goodsItem.value = result;
+    }
     
     watch(queries, () => fetchGoods(), {deep: true});
 
@@ -40,7 +43,10 @@ export default function useGoods(){
         total,
         goodsData,
         queries,
-        fetchGoods
+        fetchGoods,
+        fetchGoodsCount,
+        goodsItem,
+        fetchGoodsById
     }
 }
 

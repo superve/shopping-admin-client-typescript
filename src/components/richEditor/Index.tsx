@@ -1,5 +1,5 @@
 
-import { defineComponent, ref, unref, onMounted } from "vue";
+import { defineComponent, ref, unref, toRef, onMounted, watch } from "vue";
 import Quill from "quill";
 import { editorProps, EditorProps } from "./types";
 import defaultToolbar from "./default-toolbar";
@@ -12,6 +12,7 @@ export default defineComponent({
         const { editorToolbar, placeholder, disabled, base64Image } = props;
         const fileInputRef = ref<any>(null);
         let quillInstance: Quill | any = null;
+        const editorValue = toRef(props, "value");
 
         const editorConfig = {
             debug: false,
@@ -64,6 +65,15 @@ export default defineComponent({
             let cursorLocation = range.index;
             emit("uploadImage", file, quillInstance, cursorLocation, resetUploader);
         }
+        
+        watch(editorValue, (newValue) => {
+            const instance = unref(quillInstance);
+            if(instance) {
+                if(newValue != instance.root.innerHTML) {
+                    instance.root.innerHTML = newValue;
+                }
+            }
+        })
 
         onMounted(() => {
             setupEditor();
