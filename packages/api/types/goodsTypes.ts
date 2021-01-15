@@ -8,10 +8,10 @@ export declare namespace GoodsTypes {
     interface Goods {
         id?: number
         goods_name: string
-        purchasing_price: number
-        sales_price: number
-        inventory: number // 总库存
-        sales_inventory: number // 可销售数量
+        purchasing_price: number | string
+        sales_price: number | string
+        inventory: number | string // 总库存
+        sales_inventory: number | string // 可销售数量
         goods_media: Array<number>,
         description: string,
         is_sale: boolean,

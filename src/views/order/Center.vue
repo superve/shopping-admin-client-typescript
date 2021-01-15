@@ -1,8 +1,8 @@
 <template>
     <div>
-        <PropertiesFilter :filterKeys="filterKeys" @search="handleGoodsFilter"/>
+        <PropertiesFilter :filterKeys="filterKeys" @search="handleOrderFilter"/>
         <a-table 
-        :data-source="goodsData" 
+        :data-source="ordersData" 
         @change="handleChange"
         rowKey="id"
         :pagination="{
@@ -10,23 +10,24 @@
             pageSize: queries._limit,
         }">
             <a-table-column key="id" title="Id" data-index="id"/>
-            <a-table-column key="goods_name" title="商品名称" data-index="goods_name"/>
-            <a-table-column key="inventory" title="库存">
+            <a-table-column key="out_trade_no" title="订单号" data-index="out_trade_no"/>
+            <a-table-column key="user" title="用户">
                 <template #default="{record}">
-                    {{record.goods_number || 0}}
+                    <router-link :to="`/user/update/` + record.user.id">
+                        {{record.user.username}}
+                    </router-link>
                 </template>
             </a-table-column>
-            <a-table-column key="is_sale" title="在售">
+            <a-table-column key="is_sale" title="状态">
                 <template #default="{record}">
-                    <a-tag :color="record.is_sale ? 'green' : 'orange'">
-                        {{record.is_sale ? "启用" : "关闭"}}
+                    <a-tag :color="record.status ? 'green' : 'orange'">
+                        收货状态
                     </a-tag>
                 </template>
             </a-table-column>
             <a-table-column key="actions" title="操作">
                 <template #default="{record}">
-                    <router-link :to="`/goods/update/${record.id}`">编辑</router-link>
-                    <a-divider type="vertical" />
+                    <router-link :to="`/order/update/${record.id}`">编辑</router-link>
                 </template>    
             </a-table-column>  
         </a-table>
@@ -34,31 +35,37 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import useGoods from "./composables/useGoods";
-import useGoodsFilter from "./composables/useGoodsFilter";
+import { defineComponent, onMounted } from "vue";
+import useOrder from "./composables/useOrder";
+import useOrderFilter from "./composables/useOrderFilter";
 import PropertiesFilter from "../../components/propertiesFilter/index.vue"
 
 export default defineComponent({
     setup() {
-        const {queries, goodsData, total, fetchGoods, fetchGoodsCount} = useGoods();
-        const {filterKeys, handleGoodsFilter} = useGoodsFilter(queries);
-
-        onMounted(() => {
-            fetchGoods();
-            fetchGoodsCount();
-        });
-        
-        return {
-            queries,
-            goodsData,
+        const {
+            ordersData,
             total,
+            queries,
+            fetchOrders,
+            fetchOrdersCount
+        } = useOrder();
+        const {filterKeys, handleOrderFilter} = useOrderFilter(queries);
+        
+        onMounted(() => {
+            fetchOrders();
+            fetchOrdersCount();
+        });
+
+        return {
+            ordersData,
+            queries,
+            total,
+            fetchOrders,
+            fetchOrdersCount,
+
             filterKeys,
-            handleGoodsFilter
+            handleOrderFilter
         }
-    },
-    data() {
-        return {}
     },
     components: {
         PropertiesFilter

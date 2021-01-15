@@ -23,7 +23,7 @@ export default function useGoods(){
     }
 
     async function fetchGoodsCount() {
-        const {_start, _limit, ..._queries} = queries.value;
+        const {_start, _limit, ..._queries} = unref(queries);
         const result = await goodsApi.getGoodsCount(_queries);
         if(typeof result === "number") {
             total.value = result;

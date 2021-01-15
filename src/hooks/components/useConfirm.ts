@@ -1,6 +1,7 @@
 import { createVNode, VNode } from "vue";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal } from "ant-design-vue";
+import type { ModalFuncProps } from 'ant-design-vue/lib/modal/Modal';
 
 export enum Status {
     SUCCESS = "sucess",
@@ -8,45 +9,43 @@ export enum Status {
     ERROR = "error"
 }
 
-interface ConfirmType {
-    title: string
-    content?: string
-    status: Status
-}
-
 const icons: Record<string, VNode> = {
     [Status.WARNING]: createVNode(ExclamationCircleOutlined)
 }
 
-function confirm(data: ConfirmType) {
-    const icon = icons[data.status];
-    return new Promise((resolve, reject) => {
-        Modal.confirm({
-            title: data.title,
-            icon: icon,
-            content: data.content,
+export default function useConfirm() {
+    function createOptions(data: ModalFuncProps){
+        return {
+            ...data,
             okText: "确定",
             cancelText: "取消",
-            onOk: (v) => {
-                resolve(v);
-            },
-            onCancel: () => {
-                reject();
-            }
+            onOk(){},
+            onCancel(){}
+        }
+    }
+
+    function useWarnConfirm (title: string, content?: string){
+        const opts = createOptions({
+            title,
+            content,
+            icon: icons[Status.WARNING],
         })
-    });
-}
 
-function useConfirm(data: ConfirmType) {
-    return confirm(data);
-}
+        return new Promise((resolve, reject) => {
+            return Modal.confirm({
+                ...opts,
+                onOk(){
+                    resolve({});
+                },
+                onCancel(){
+                    reject();
+                }
+            })
+        })
+    }
 
-useConfirm.warn = function(title: string, content?: string){
-    return confirm({
-        title,
-        content,
-        status: Status.WARNING
-    });
-}
-
-export default useConfirm;
+    return {
+        useWarnConfirm
+    }
+    
+};

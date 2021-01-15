@@ -45,8 +45,7 @@
                     <a-col v-for="(item, index) in skuName"
                     :key="index">
                         <a-input v-model:value="item.value" 
-                        :placeholder="item.placeholder"
-                        @blur="handleSkuName(index)">
+                        :placeholder="item.placeholder">
                         </a-input>
                     </a-col>
                 </a-row>
@@ -202,9 +201,11 @@ export default defineComponent({
             // 初始化formData
             this.formData.id = value.id;
             this.formData.goods_name = value.goods_name;
-            this.formData.purchasing_price = value.purchasing_price;
-            this.formData.sales_price = value.sales_price;
-            this.formData.inventory = value.inventory;
+            // a-form为空校验时要求输入框值是string类型
+            this.formData.purchasing_price = String(value.purchasing_price);
+            this.formData.sales_price = String(value.sales_price);
+            this.formData.inventory = String(value.inventory);
+            this.formData.sales_inventory = String(value.sales_inventory);
             this.formData.goods_media = value.goods_media;
             this.formData.description = value.description;
             this.formData.is_sale = value.is_sale;
@@ -220,7 +221,7 @@ export default defineComponent({
             });
 
             // 初始化SKU名
-            if(Array.isArray(value.skus)) {
+            if(Array.isArray(value.skus) && value.skus.length) {
                 this.skuName[0].value =  value.skus[0].type_1_name;
                 this.skuName[1].value =  value.skus[0].type_2_name;
                 this.skuName[2].value =  value.skus[0].type_3_name;
@@ -250,8 +251,15 @@ export default defineComponent({
         handleChange({file, fileList }: any) {
             this.fileList = fileList;
             if(file.status === "done") {
-                // 单张上传返回的response的永远只有一张
-                this.goods_media = fileList.map((v:any) => v.response[0]);
+                // 单张上传返回的response的永远只有一张 
+                // 这里注意创建和编辑是有区别的
+                this.goods_media = fileList.map((v:any) => {
+                    if(v.response && Array.isArray(v.response)) {
+                        return v.response[0];
+                    }else {
+                        return v;
+                    }
+                });
             }         
         },
         addSku() {
@@ -273,25 +281,6 @@ export default defineComponent({
                 resetUploader();
             }
         },
-        handleSkuName(index: number) {
-            const { value } = this.skuName[index];
-            // 修改所有skus的名字
-            // useConfirm.warn("确定修改吗？").then(res => {
-            //      const data = this.formData.skus.map(v => {
-            //         v[`type_${index + 1}_name`] = value;
-            //         return _.pick(v,
-            //             'id',
-            //             'type_1_name', 
-            //             'type_2_name', 
-            //             'type_3_name',
-            //         )
-            //     });
-            //     this.updateGoodsSku(data)
-            // }).catch(() => {
-            //     this.skuName[index].value = this.formData.skus[0] ? 
-            //         this.formData.skus[0][`type_${index + 1}_name`] : ""
-            // })
-        },
         handleSubmitSku(){
             // 编辑部分
             const len = this.formData.skus.length;
@@ -302,6 +291,8 @@ export default defineComponent({
                 type_2_name: this.skuName[1].value || "",
                 type_3_name: this.skuName[2].value || "",
             }
+
+            // 修改所有skus的名字
             this.skuValue.forEach((v:any, i: number) => {
                 if(i < len) {
                     editorSkus.push({

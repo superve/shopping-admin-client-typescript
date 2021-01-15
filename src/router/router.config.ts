@@ -80,6 +80,50 @@ export const menusRoutes: RouteRecordRaw[] = [
                 ]
             },
             {
+                path: "/category",
+                redirect: "/category/center",
+                component: MainLayout,
+                meta: {
+                    label: "栏目管理",
+                    policies: ["AUTHOR", "CHARGE"]
+                },
+                children: [
+                    {
+                        path: "center",
+                        component: () => import("../views/category/Center.vue"),
+                        meta: {
+                            label: "栏目列表"
+                        }
+                    }
+                ]
+            },
+            {
+                path: "/order",
+                redirect: "/order/center",
+                component: MainLayout,
+                meta: {
+                    label: "订单管理",
+                    policies: ["AUTHOR", "CHARGE"]
+                },
+                children: [
+                    {
+                        path: "center",
+                        component: () => import("../views/order/Center.vue"),
+                        meta: {
+                            label: "订单列表"
+                        }
+                    },
+                    {
+                        path: "update/:id",
+                        component: () => import("../views/order/Update.vue"),
+                        meta: {
+                            label: "编辑列表",
+                            hiddenMenu: true
+                        }
+                    },
+                ]
+            },
+            {
                 path: "/admin-user",
                 redirect: "/admin-user/center",
                 component: MainLayout,

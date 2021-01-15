@@ -30,6 +30,7 @@
             <a-form-item>
                 <a-button type="primary" html-type="submit"> 搜索 </a-button>
             </a-form-item>
+            <slot></slot>
         </a-form>
     </div>
 </template>
