@@ -47,8 +47,6 @@ export default function useGoodsCreate() {
         const form = unref(formRef);
         // 删除skus, skus独立编辑
         Reflect.deleteProperty(queries, "skus");
-        
-        console.log(queries)
 
         try {
             await form.validate();

@@ -10,7 +10,16 @@
             pageSize: queries._limit,
         }">
             <a-table-column key="id" title="Id" data-index="id"/>
-            <a-table-column key="goods_name" title="商品名称" data-index="goods_name"/>
+            <a-table-column key="goods_name" title="商品名称" >
+                <template #default="{record}">
+                    <a-avatar 
+                    v-if="record.goods_media[0]"
+                    shape="square"
+                    :src="request.defaults.baseURL + record.goods_media[0].url" />
+                    <a-divider type="vertical" />
+                    {{record.goods_name}}
+                </template>
+            </a-table-column>
             <a-table-column key="inventory" title="库存">
                 <template #default="{record}">
                     {{record.goods_number || 0}}
@@ -37,7 +46,8 @@
 import { defineComponent, onMounted, ref } from "vue";
 import useGoods from "./composables/useGoods";
 import useGoodsFilter from "./composables/useGoodsFilter";
-import PropertiesFilter from "../../components/propertiesFilter/index.vue"
+import PropertiesFilter from "../../components/propertiesFilter/index.vue";
+import request from "../../../packages/utils/http/request";
 
 export default defineComponent({
     setup() {
@@ -58,7 +68,9 @@ export default defineComponent({
         }
     },
     data() {
-        return {}
+        return {
+            request
+        }
     },
     components: {
         PropertiesFilter

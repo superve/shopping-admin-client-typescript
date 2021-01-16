@@ -49,7 +49,6 @@
 <script lang="ts">
 import { defineComponent, ref, unref, reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { object } from "vue-types";
 import { useStore } from 'vuex'
 import { UserParams } from "../../../packages/api/types/userTypes"
 

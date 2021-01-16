@@ -13,10 +13,7 @@
             <a-form-item label="图片" name="goods_media">
                 <a-upload
                     :action="request.defaults.baseURL + '/upload'"
-                    :headers="{
-                        Authorization: token
-                    }"
-                    method="POST"
+                    :headers="{ Authorization: token }"
                     name="files"
                     list-type="picture-card"
                     :file-list="fileList"
@@ -52,11 +49,23 @@
             <a-form-item label="SKU值" :wrapper-col="{ span: 20}">
                 <a-row :gutter="[16]" v-for="(item, index) in skuValue"
                     :key="index">
-                    <a-col v-for="(subItem, key, subIndex) in item"
+                    <template v-for="(subItem, key, subIndex) in item"
                     :key="subIndex">
-                        <a-input v-model:value="item[key]" 
-                        :placeholder="skuName[subIndex] && skuName[subIndex].value || skuPlaceholder[key]">
-                        </a-input>
+                        <a-col v-if="key !== 'cover'">
+                            <a-input v-model:value="item[key]" 
+                            :placeholder="skuName[subIndex] && skuName[subIndex].value || skuPlaceholder[key]">
+                            </a-input>
+                        </a-col>
+                    </template>
+                    <a-col>
+                        <a-upload
+                            v-model:fileList="item.cover"
+                            :action="request.defaults.baseURL + '/upload'"
+                            :headers="{ Authorization: token }"
+                            name="files"
+                        >
+                            <a-button> 上传图片 </a-button>
+                        </a-upload>
                     </a-col>
                     <a-col v-if="index > 0">
                         <a-button @click="removeSku(index)">删除</a-button>
@@ -105,7 +114,8 @@ const skuItem = {
     // type_3_name: "",
     price: "",
     inventory: "",
-    sales_volume: ""
+    sales_volume: "",
+    cover: []
 }
 
 export default defineComponent({
@@ -187,14 +197,15 @@ export default defineComponent({
         handleSubmit() {
             // 是formData下的引用
             this.skus = this.skuValue.map((v:any, i: number) => {
+                const url = v.cover[0] ? v.cover[0].response[0].id : "";
                 return {
                     ...v,
                     type_1_name: this.skuName[0].value || "",
                     type_2_name: this.skuName[1].value || "",
                     type_3_name: this.skuName[2].value || "",
+                    cover: url
                 }
-            })
-
+            });
             this.handleGoodsCreate();
         },
         async handleUploadImage(

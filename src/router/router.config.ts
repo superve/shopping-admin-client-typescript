@@ -117,10 +117,10 @@ export const menusRoutes: RouteRecordRaw[] = [
                         path: "update/:id",
                         component: () => import("../views/order/Update.vue"),
                         meta: {
-                            label: "编辑列表",
+                            label: "编辑订单",
                             hiddenMenu: true
                         }
-                    },
+                    }
                 ]
             },
             {
