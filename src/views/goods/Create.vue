@@ -25,6 +25,26 @@
                     </div>
                 </a-upload>
             </a-form-item>
+            <a-form-item label="栏目" name="categories">
+                <a-tree-select
+                    show-search
+                    style="width: 100%"
+                    v-model:value="value"
+                    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                    placeholder="选择栏目"
+                    allow-clear
+                    multiple
+                    tree-default-expand-all
+                    @select="handleCategorySelect"
+                >
+                    <a-tree-select-node key="0-1" value="parent 1" title="parent 1">
+                        <a-tree-select-node key="0-1-1" value="parent 1-0" title="parent 1-0">
+                            <a-tree-select-node key="random" value="leaf1" title="my leaf" />
+                            <a-tree-select-node key="random1" value="leaf2" title="your leaf" />
+                        </a-tree-select-node>
+                    </a-tree-select-node>
+                </a-tree-select>
+            </a-form-item>
             <a-form-item label="采购价" name="purchasing_price">
                 <a-input v-model:value="formData.purchasing_price"></a-input>
             </a-form-item>
@@ -197,13 +217,13 @@ export default defineComponent({
         handleSubmit() {
             // 是formData下的引用
             this.skus = this.skuValue.map((v:any, i: number) => {
-                const url = v.cover[0] ? v.cover[0].response[0].id : "";
+                const coverId = v.cover[0] ? v.cover[0].response[0].id : "";
                 return {
                     ...v,
                     type_1_name: this.skuName[0].value || "",
                     type_2_name: this.skuName[1].value || "",
                     type_3_name: this.skuName[2].value || "",
-                    cover: url
+                    cover: coverId
                 }
             });
             this.handleGoodsCreate();
@@ -220,7 +240,10 @@ export default defineComponent({
                 Editor.insertEmbed(cursorLocation, "image", url);
                 resetUploader();
             }
-        }
+        },
+        handleCategorySelect() {
+            console.log(...arguments);
+        },
     }
 });
 </script>

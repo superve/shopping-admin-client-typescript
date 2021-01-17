@@ -28,6 +28,9 @@
                     </div>
                 </a-upload>
             </a-form-item>
+            <a-form-item label="栏目" name="goods_media">
+
+            </a-form-item>
             <a-form-item label="采购价" name="purchasing_price">
                 <a-input v-model:value="formData.purchasing_price"></a-input>
             </a-form-item>
@@ -50,14 +53,26 @@
                     </a-col>
                 </a-row>
             </a-form-item>
-            <a-form-item label="SKU值" :wrapper-col="{ span: 18}">
+            <a-form-item label="SKU值" :wrapper-col="{ span: 20}">
                 <a-row :gutter="[16]" v-for="(item, index) in skuValue"
                     :key="index">
-                    <a-col v-for="(subItem, key, subIndex) in item"
+                    <template v-for="(subItem, key, subIndex) in item"
                     :key="subIndex">
-                        <a-input v-model:value="item[key]" 
-                        :placeholder="skuName[subIndex] && skuName[subIndex].value || skuPlaceholder[key]">
-                        </a-input>
+                        <a-col v-if="key !== 'cover'">
+                            <a-input v-model:value="item[key]" 
+                            :placeholder="skuName[subIndex] && skuName[subIndex].value || skuPlaceholder[key]">
+                            </a-input>
+                        </a-col>
+                    </template>
+                    <a-col>
+                        <a-upload
+                            v-model:fileList="item.cover"
+                            :action="request.defaults.baseURL + '/upload'"
+                            :headers="{ Authorization: token }"
+                            name="files"
+                        >
+                            <a-button> 上传图片 </a-button>
+                        </a-upload>
                     </a-col>
                     <a-col>
                         <a-button @click="removeSku(index)">删除</a-button>
@@ -125,6 +140,7 @@ const skuItem: GoodsTypes.GoodsSku = {
     price: "",
     inventory: "",
     sales_volume: "",
+    cover: []
 }
 
 const skuPlaceholder = {
@@ -222,22 +238,25 @@ export default defineComponent({
 
             // 初始化SKU名
             if(Array.isArray(value.skus) && value.skus.length) {
-                this.skuName[0].value =  value.skus[0].type_1_name;
-                this.skuName[1].value =  value.skus[0].type_2_name;
-                this.skuName[2].value =  value.skus[0].type_3_name;
+                this.skuName[0].value = value.skus[0].type_1_name;
+                this.skuName[1].value = value.skus[0].type_2_name;
+                this.skuName[2].value = value.skus[0].type_3_name;
 
                 this.skuValue = value.skus.map((v: any) => {
                     // pick会根据属性排序
-                    return _.pick(
+                    const item = _.pick(
                         v, 
                         'type_1', 
                         'type_2', 
                         'type_3', 
                         'price', 
                         'inventory', 
-                        'sales_volume'
-                    )
-                })
+                        'sales_volume',
+                        'cover'
+                    );
+                    item.cover = item.cover ? [item.cover] : [];
+                    return item;
+                });
             }
         },
     },
@@ -294,35 +313,34 @@ export default defineComponent({
 
             // 修改所有skus的名字
             this.skuValue.forEach((v:any, i: number) => {
+                let coverId = "";
+                if(Array.isArray(v.cover) && v.cover[0]) {
+                    coverId = v.cover[0].response ? v.cover[0].response[0].id : v.cover[0].id;
+                }
+
                 if(i < len) {
                     editorSkus.push({
                         ...v,
                         ...typeName,
                         id: this.formData.skus[i].id,
+                        cover: coverId
                     })
                 }else {
                     createSkus.push({
                         goods: this.goodsItem.id,
                         ...v,
                         ...typeName,
+                        cover: coverId
                     })
                 }
             })
             this.composeGoodsSku(editorSkus, createSkus);
         },
         handleSubmit() {
-            // 是formData下的引用
-            // this.skus = this.skuValue.map((v:any, i: number) => {
-            //     return {
-            //         ...v,
-            //         type_1_name: this.skuName[0].value || "",
-            //         type_2_name: this.skuName[1].value || "",
-            //         type_3_name: this.skuName[2].value || "",
-            //     }
-            // })
-
+            // 编辑不包含skus, 分开编辑
+            // this.handleSubmitSku();
             this.handleUpdateGoods();
-        },
+        }
     }
 });
 </script>

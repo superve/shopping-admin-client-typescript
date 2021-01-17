@@ -30,6 +30,7 @@ export declare namespace GoodsTypes {
         type_3_name?: string,
         price?: number | string,
         inventory?: number | string,
-        sales_volume?: number | string
+        sales_volume?: number | string,
+        cover: Array<any>
     }
 }
