@@ -15,7 +15,8 @@ export default function useGoodsCreate() {
         description: "",
         is_sale: true,
         saled_at: new Date(),
-        skus: []
+        skus: [],
+        categories: []
     })
     const goods_media = toRef(formData, "goods_media");
     const skus = toRef(formData, "skus");
@@ -26,7 +27,10 @@ export default function useGoodsCreate() {
         purchasing_price: [{ required: true, trigger: "change", message: "请输入采购价。"}],
         sales_price: [{ required: true, trigger: "change", message: "请输入销售价。"}],
         inventory: [{ required: true, trigger: "change", message: "请输入总库存。"}],
-        sales_inventory: [{ required: true, trigger: "change", message: "请输可销售数量。"}],
+        sales_inventory: [{ required: true, trigger: "change", message: "请输入销售数量。"}],
+
+        // 非字符串字段的验证需要单独设置
+        categories: [{ required: true, message: "请选择栏目。"}]
     })
 
     async function handleGoodsCreate(){

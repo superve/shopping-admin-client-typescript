@@ -17,7 +17,8 @@ export declare namespace GoodsTypes {
         is_sale: boolean,
         goods_number?: number,
         saled_at: Date,
-        skus: Array<any>
+        skus: Array<any>,
+        categories: Array<number | any>
     }
 
     interface GoodsSku {

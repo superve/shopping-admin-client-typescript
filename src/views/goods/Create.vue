@@ -26,24 +26,16 @@
                 </a-upload>
             </a-form-item>
             <a-form-item label="栏目" name="categories">
-                <a-tree-select
-                    show-search
-                    style="width: 100%"
-                    v-model:value="value"
-                    :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                    placeholder="选择栏目"
-                    allow-clear
-                    multiple
-                    tree-default-expand-all
-                    @select="handleCategorySelect"
-                >
-                    <a-tree-select-node key="0-1" value="parent 1" title="parent 1">
-                        <a-tree-select-node key="0-1-1" value="parent 1-0" title="parent 1-0">
-                            <a-tree-select-node key="random" value="leaf1" title="my leaf" />
-                            <a-tree-select-node key="random1" value="leaf2" title="your leaf" />
-                        </a-tree-select-node>
-                    </a-tree-select-node>
-                </a-tree-select>
+                <a-cascader
+                    v-model:value="formData.categories"
+                    :options="categories"
+                    placeholder="请选择栏目"
+                    :fieldNames="{
+                        label: 'category_name',
+                        value: 'id',
+                        children: 'children_categories'
+                    }"
+                />
             </a-form-item>
             <a-form-item label="采购价" name="purchasing_price">
                 <a-input v-model:value="formData.purchasing_price"></a-input>
@@ -57,7 +49,7 @@
             <a-form-item label="销售库存" name="sales_inventory">
                 <a-input v-model:value="formData.sales_inventory"></a-input>
             </a-form-item>
-            <a-form-item label="SKU名" :wrapper-col="{ span: 14}">
+            <a-form-item label="SKU名" :wrapper-col="{ span: 14}" name="skus">
                 <a-row :gutter="[16]">
                     <a-col v-for="(item, index) in skuName"
                     :key="index">
@@ -66,7 +58,7 @@
                     </a-col>
                 </a-row>
             </a-form-item>
-            <a-form-item label="SKU值" :wrapper-col="{ span: 20}">
+            <a-form-item label="SKU值" :wrapper-col="{ span: 20}" name="skus">
                 <a-row :gutter="[16]" v-for="(item, index) in skuValue"
                     :key="index">
                     <template v-for="(subItem, key, subIndex) in item"
@@ -119,6 +111,9 @@ import { defineComponent } from "vue";
 import useGoodsCreate from "./composables/useGoodsCreate";
 import usePreview from "./composables/usePreview";
 import useUpload from "./composables/useUpload";
+import useGoodsCate from "./composables/useGoodsCate";
+
+
 import request from "../../../packages/utils/http/request";
 import { getToken } from "../../../packages/utils/storage";
 
@@ -154,6 +149,9 @@ export default defineComponent({
             handlePreview, 
             handleCancelPreview
         } =  usePreview();
+        const {
+            categories
+        } = useGoodsCate();
 
         return {
             formData,
@@ -167,7 +165,9 @@ export default defineComponent({
             previewVisible, 
             previewImage, 
             handlePreview, 
-            handleCancelPreview
+            handleCancelPreview,
+
+            categories
         }
     },
     data() {
@@ -240,10 +240,7 @@ export default defineComponent({
                 Editor.insertEmbed(cursorLocation, "image", url);
                 resetUploader();
             }
-        },
-        handleCategorySelect() {
-            console.log(...arguments);
-        },
+        }
     }
 });
 </script>

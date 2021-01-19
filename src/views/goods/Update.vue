@@ -28,8 +28,17 @@
                     </div>
                 </a-upload>
             </a-form-item>
-            <a-form-item label="栏目" name="goods_media">
-
+            <a-form-item label="栏目" name="categories">
+                <a-cascader
+                    v-model:value="formData.categories"
+                    :options="categories"
+                    placeholder="请选择栏目"
+                    :fieldNames="{
+                        label: 'category_name',
+                        value: 'id',
+                        children: 'children_categories'
+                    }"
+                />
             </a-form-item>
             <a-form-item label="采购价" name="purchasing_price">
                 <a-input v-model:value="formData.purchasing_price"></a-input>
@@ -114,6 +123,8 @@ import useGoods from "./composables/useGoods";
 import useGoodsSku from "./composables/useGoodsSku";
 import usePreview from "./composables/usePreview";
 import useUpload from "./composables/useUpload";
+import useGoodsCate from "./composables/useGoodsCate";
+
 import getBase64 from "../../../packages/utils/getBase64";
 import request from "../../../packages/utils/http/request";
 import { getToken } from "../../../packages/utils/storage";
@@ -174,6 +185,10 @@ export default defineComponent({
         const {
             composeGoodsSku,
         } = useGoodsSku();
+        const {
+            categories
+        } = useGoodsCate();
+
         const route = useRoute()
         onMounted(() => {
             fetchGoodsById(route.params.id);
@@ -194,6 +209,8 @@ export default defineComponent({
 
             goodsItem, 
             composeGoodsSku,
+
+            categories
         }
     },
     data() {
@@ -227,6 +244,7 @@ export default defineComponent({
             this.formData.is_sale = value.is_sale;
             this.formData.saled_at = value.saled_at;
             this.formData.skus = value.skus;
+            this.formData.categories = value.categories.map((v: any) => v.id);
 
             // 初始化图片列表
             this.fileList = value.goods_media.map((v: any) => {
